@@ -2,7 +2,7 @@ import { JwtService, DataCrypt } from "@shared/utils";
 import { userRepository, userService } from "src/user";
 import { UnauthorizedError } from "@shared/errors";
 
-export class AuthController {
+export class AuthService {
   static async register(
     email: string,
     firstName: string,
