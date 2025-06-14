@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { UnauthorizedError } from "@shared/errors";
 import { AuthService } from "./auth.service";
+import { JwtPayload } from "@shared/utils";
 
 export async function register(req: Request, res: Response) {
   const { email, firstName, lastName, password } = req.body;
@@ -14,6 +15,13 @@ export async function login(req: Request, res: Response) {
 
   const tokens = await AuthService.login(email, password);
   res.json(tokens);
+}
+
+export async function getProfile(req: Record<string, any>, res: Response) {
+  const user: JwtPayload = req["user"];
+
+  const userInfo = await AuthService.getProfile(user.userId)
+  res.json(userInfo);
 }
 
 export async function refreshToken(req: Request, res: Response) {
