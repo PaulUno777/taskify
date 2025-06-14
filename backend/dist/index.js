@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const app_1 = __importDefault(require("./app"));
-const config_1 = require("./shared/config");
+const config_1 = require("./config/config");
 const data_source_1 = require("./data/data-source");
 // Init typeorm before start server
 data_source_1.AppDataSource.initialize()

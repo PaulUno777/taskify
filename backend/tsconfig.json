@@ -13,7 +13,12 @@
     "resolveJsonModule": true,
     "moduleResolution": "node",
     "isolatedModules": true,
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "baseUrl": "./",
+    "paths": {
+      "@shared/*": ["src/shared/*"],
+      "@config/*": ["src/config/*"]
+    }
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]

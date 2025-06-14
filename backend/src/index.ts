@@ -1,11 +1,12 @@
 import "reflect-metadata";
 import app from "./app";
-import { config } from "./shared/config";
-import { AppDataSource } from "./shared/data/data-source";
+import { config } from "@config/config";
+import { AppDataSource } from "@config/data-source";
 
 // Init typeorm before start server
 AppDataSource.initialize()
   .then(() => {
+    console.log("Data Source initialized");
     app.listen(config.port, () => {
       console.log(
         `Server started on port ${config.port} in ${config.nodeEnv} mode.`
