@@ -4,7 +4,8 @@ import {
   InternalServerError,
   NotFoundError,
   UnauthorizedError,
-} from "./shared/errors";
+} from "@shared/errors";
+import { logger } from "@shared/logger";
 
 export function errorHandler(
   err: Error,
@@ -12,8 +13,10 @@ export function errorHandler(
   res: Response,
   next: NextFunction
 ): void {
-  // Log the error for debugging
-  console.error(err);
+  logger.error({ 
+    message: err?.message, 
+    stack: err?.stack 
+  });
 
   if (err instanceof ConflictError) {
     res.status(409).json({ message: err.message });
