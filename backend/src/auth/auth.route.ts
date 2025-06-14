@@ -1,12 +1,12 @@
 import { Router } from "express";
 import { getProfile, login, refreshToken, register } from "./auth.controller";
-import { authenticateAccess, authenticateRefresh } from "@shared/middleware";
+import { accessGuard, refreshGuard } from "@shared/middleware";
 
-const authRouter = Router();
+const router = Router();
 
-authRouter.post("/register", register);
-authRouter.post("/login", login);
-authRouter.get("/profile", authenticateAccess, getProfile);
-authRouter.post("/refresh-token", authenticateRefresh, refreshToken);
+router.post("/register", register);
+router.post("/login", login);
+router.get("/profile", accessGuard, getProfile);
+router.post("/refresh-token", refreshGuard, refreshToken);
 
-export default authRouter;
+export { router as authRouter };
