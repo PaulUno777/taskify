@@ -1,18 +1,26 @@
-import { AppDataSource } from "@config/data-source";
-import { TaskCategory } from "./task-category.entity";
 import { userRepository } from "src/user";
-import { NotFoundError } from "@shared/errors";
+import { ConflictError, NotFoundError } from "@shared/errors";
+import { categoryRepository, CreateCategoryDto, UpdateCategoryDto } from ".";
 
 export class CategoryService {
-  private categoryRepo = AppDataSource.getRepository(TaskCategory);
+  private categoryRepo = categoryRepository;
   private userRepo = userRepository;
 
-  async create(data: Partial<TaskCategory>, userId: string) {
+  async create(data: CreateCategoryDto, userId: string) {
     const user = await this.userRepo.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundError("User not found");
 
-    const category = this.categoryRepo.create({ ...data, user });
-    return this.categoryRepo.save(category);
+    const existing = await this.categoryRepo.findOne({
+      where: { name: data.name },
+    });
+    if (existing) {
+      existing.color = data.color;
+      await this.categoryRepo.save(existing);
+
+      return { message: "Category successfully updated." };
+    }
+    await this.categoryRepo.save(this.categoryRepo.create({ ...data, user }));
+    return { message: "Category successfully created." };
   }
 
   async findAll(userId: string) {
@@ -27,7 +35,7 @@ export class CategoryService {
     return category;
   }
 
-  async update(id: string, userId: string, data: Partial<TaskCategory>) {
+  async update(id: string, userId: string, data: UpdateCategoryDto) {
     const category = await this.findOne(id, userId);
     Object.assign(category, data);
     return this.categoryRepo.save(category);

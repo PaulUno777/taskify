@@ -1,13 +1,12 @@
 import { Response } from "express";
-import { taskService } from ".";
-import { parseQueryToDto } from "@shared/utils";
+import { categoryService } from ".";
 
-export class TaskController {
+export class CategoryController {
   static async create(req: Record<string, any>, res: Response) {
     try {
       const userId = req?.user?.userId;
 
-      const task = await taskService.create(req.body, userId);
+      const task = await categoryService.create(req.body, userId);
       res.status(202).json(task);
     } catch (err) {
       res.status(400).json({ message: (err as Error).message });
@@ -18,7 +17,7 @@ export class TaskController {
     try {
       const userId = req?.user?.userId;
       const { id } = req.params;
-      const task = await taskService.update(id, userId, req.body);
+      const task = await categoryService.update(id, userId, req.body);
       res.json(task);
     } catch (err) {
       res.status(400).json({ message: (err as Error).message });
@@ -30,7 +29,7 @@ export class TaskController {
       const userId = req?.user?.userId;
 
       const { id } = req.params;
-      await taskService.delete(id, userId);
+      await categoryService.delete(id, userId);
       res.json({ message: "Deleted successfully" });
     } catch (err) {
       res.status(400).json({ message: (err as Error).message });
@@ -42,32 +41,18 @@ export class TaskController {
       const userId = req?.user?.userId;
 
       const { id } = req.params;
-      const task = await taskService.findOne(id, userId);
+      const task = await categoryService.findOne(id, userId);
       res.json(task);
     } catch (err) {
       res.status(400).json({ message: (err as Error).message });
     }
   }
 
-  static async findAllForUser(req: Record<string, any>, res: Response) {
+  static async findAll(req: Record<string, any>, res: Response) {
     try {
       const userId = req?.user?.userId;
-      console.log("userId", req?.user);
 
-      const filter = parseQueryToDto(req.query);
-      const tasks = await taskService.findAllForUser(userId, filter);
-      res.json(tasks);
-    } catch (err) {
-      res.status(400).json({ message: (err as Error).message });
-    }
-  }
-
-  static async share(req: Record<string, any>, res: Response) {
-    try {
-      const userId = req?.user?.userId;
-      const { id, friendId } = req.params;
-
-      const tasks = await taskService.share(id, userId, friendId);
+      const tasks = await categoryService.findAll(userId);
       res.json(tasks);
     } catch (err) {
       res.status(400).json({ message: (err as Error).message });

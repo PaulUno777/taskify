@@ -1,8 +1,8 @@
 import { AppBaseEntity } from "@shared/entities/app-base.entity";
-import { TaskCategory } from "src/task-category";
+import { Category } from "src/category";
 import { Task } from "src/task";
 import { Entity, Column, OneToMany, ManyToMany } from "typeorm";
-import { TaskComment } from "src/task-comment";
+import { Comment } from "src/comment";
 
 @Entity()
 export class User extends AppBaseEntity {
@@ -27,9 +27,9 @@ export class User extends AppBaseEntity {
   @ManyToMany(() => Task, (task) => task.sharedWith)
   sharedTasks: Task[];
 
-  @OneToMany(() => TaskCategory, (category) => category.user)
-  categories: TaskCategory[];
+  @OneToMany(() => Category, (category) => category.user)
+  categories: Category[];
 
-  @OneToMany(() => TaskComment, (comment) => comment.author)
-  comments: TaskComment[];
+  @OneToMany(() => Comment, (comment) => comment.author)
+  comments: Comment[];
 }
