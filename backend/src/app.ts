@@ -15,7 +15,7 @@ app.use(morganLogger);
 
 app.use("/api/auth", authRouter);
 app.use("/api/tasks", taskRouter);
-app.use("/api/tasks/:taskId/comment", commentRouter);
+app.use("/api/comments", commentRouter);
 app.use("/api/category", categoryRouter);
 //Error handling
 app.use(errorHandler);

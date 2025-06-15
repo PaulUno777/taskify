@@ -8,7 +8,7 @@ export class TaskController {
       const userId = req?.user?.userId;
 
       const task = await taskService.create(req.body, userId);
-      res.status(202).json(task);
+      res.status(201).json(task);
     } catch (err) {
       res.status(400).json({ message: (err as Error).message });
     }
@@ -52,7 +52,6 @@ export class TaskController {
   static async findAllForUser(req: Record<string, any>, res: Response) {
     try {
       const userId = req?.user?.userId;
-      console.log("userId", req?.user);
 
       const filter = parseQueryToDto(req.query);
       const tasks = await taskService.findAllForUser(userId, filter);
@@ -65,9 +64,14 @@ export class TaskController {
   static async share(req: Record<string, any>, res: Response) {
     try {
       const userId = req?.user?.userId;
-      const { id, friendId } = req.params;
-
-      const tasks = await taskService.share(id, userId, friendId);
+      const { id } = req.params;
+      const { friendEmail, permission } = req.body;
+      const tasks = await taskService.share(
+        id,
+        userId,
+        friendEmail,
+        permission
+      );
       res.json(tasks);
     } catch (err) {
       res.status(400).json({ message: (err as Error).message });

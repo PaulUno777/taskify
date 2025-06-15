@@ -7,12 +7,20 @@ require("reflect-metadata");
 const app_1 = __importDefault(require("./app"));
 const config_1 = require("./config/config");
 const data_source_1 = require("./config/data-source");
-// Init typeorm before start server
-data_source_1.AppDataSource.initialize()
-    .then(() => {
-    console.log("Data Source initialized \n");
-    app_1.default.listen(config_1.config.port, () => {
-        console.log(`Server started on port ${config_1.config.port} in ${config_1.config.nodeEnv} mode.`);
-    });
-})
-    .catch((err) => console.error(err));
+async function main() {
+    try {
+        data_source_1.AppDataSource.initialize()
+            .then(() => {
+            console.log("= = = Data Source initialized = = =\n");
+            app_1.default.listen(config_1.config.port, () => {
+                console.log(`Server started on port ${config_1.config.port} in ${config_1.config.nodeEnv} mode.`);
+            });
+        })
+            .catch((err) => console.error(err));
+    }
+    catch (err) {
+        console.error("Startup Error!", err);
+        process.exit(1);
+    }
+}
+main();

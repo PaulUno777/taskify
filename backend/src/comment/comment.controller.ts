@@ -7,14 +7,14 @@ export class CommentController {
       const userId = req?.user?.userId;
       const { taskId } = req.params;
       const { content } = req.body;
-
       const result = await commentService.create({
         content,
         taskId,
         authorId: userId,
       });
-      res.status(202).json(result);
+      res.status(201).json(result);
     } catch (err) {
+      console.log(err)
       res.status(400).json({ message: (err as Error).message });
     }
   }

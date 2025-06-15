@@ -6,11 +6,12 @@ import {
   UpdateTaskDto,
 } from "./task-input.dto";
 import { categoryRepository } from "src/category";
-import { Task, taskRepository } from ".";
+import { SharePermission, Task, taskRepository, taskShareRepository } from ".";
 import { StandardOutputDto } from "@shared/dtos/standard-output.dto";
 
 export class TaskService {
   private categoryRepo = categoryRepository;
+  private taskShareRepo = taskShareRepository;
   private taskRepo = taskRepository;
   private userRepo = userRepository;
 
@@ -60,12 +61,12 @@ export class TaskService {
       updatedTo,
     }: FindAllForUserDto
   ) {
-    console.log("userId", userId);
     const query = this.taskRepo
       .createQueryBuilder("task")
       .innerJoin("task.owner", "owner")
       .leftJoinAndSelect("task.category", "category")
-      .leftJoin("task.sharedWith", "sharedWith")
+      .leftJoin("task.shares", "shares")
+      .leftJoin("shares.user", "sharedWith")
       .where("owner.id = :userId OR sharedWith.id = :userId", { userId });
 
     if (priority) {
@@ -133,7 +134,14 @@ export class TaskService {
         "owner.firstName",
         "owner.lastName",
       ])
-      .leftJoinAndSelect("task.sharedWith", "sharedWith")
+      .leftJoinAndSelect("task.shares", "shares")
+      .leftJoin("shares.user", "sharedWith")
+      .addSelect([
+        "sharedWith.id",
+        "sharedWith.email",
+        "sharedWith.firstName",
+        "sharedWith.lastName",
+      ])  
       .leftJoinAndSelect("task.category", "category")
       .leftJoinAndSelect("task.comments", "comments")
       .where(
@@ -145,7 +153,7 @@ export class TaskService {
     if (!task) throw new NotFoundError("Task not found");
     if (
       task.owner.id !== userId &&
-      !task.sharedWith.some((u) => u.id === userId)
+      !task.shares.some((u) => u.user.id === userId)
     ) {
       throw new ForbiddenError("Forbidden");
     }
@@ -158,7 +166,22 @@ export class TaskService {
     data: UpdateTaskDto
   ): Promise<StandardOutputDto> {
     const task = await this.findOne(id, userId);
+
+    // Determine if the user is the owner or has EDIT permission
+    const isOwner = task.owner.id === userId;
+    const share = task.shares?.find((s) => s.user.id === userId);
+    const canEdit =
+      isOwner || (share && share.permission === SharePermission.EDIT);
+
+    if (!canEdit) {
+      throw new ForbiddenError("Forbidden. You do not have edit permissions.");
+    }
+
     if (data.categoryId) {
+      if (!isOwner)
+        throw new ForbiddenError(
+          "Forbidden. Only owner can modify the category."
+        );
       const category = await this.categoryRepo.findOne({
         where: { id: data.categoryId, user: { id: userId } },
       });
@@ -168,7 +191,10 @@ export class TaskService {
       task.category = category;
       delete data.categoryId;
     }
+
     Object.assign(task, data);
+    await this.taskRepo.save(task);
+
     return { message: "Task successfully updated." };
   }
 
@@ -183,15 +209,32 @@ export class TaskService {
   async share(
     id: string,
     ownerId: string,
-    friendId: string
+    friendEmail: string,
+    permission: SharePermission
   ): Promise<StandardOutputDto> {
     const task = await this.findOne(id, ownerId);
 
-    const friend = await this.userRepo.findOne({ where: { id: friendId } });
+    const friend = await this.userRepo.findOne({
+      where: { email: friendEmail },
+    });
     if (!friend) throw new NotFoundError("User not found");
 
-    task.sharedWith = task.sharedWith ? [...task.sharedWith, friend] : [friend];
-    await this.taskRepo.save(task);
+    let existing = await this.taskShareRepo.findOne({
+      where: { task: { id: task.id }, user: { id: friend.id } },
+    });
+
+    if (existing?.permission) {
+      existing.permission = permission;
+      await this.taskShareRepo.save(existing);
+    } else {
+      await this.taskShareRepo.save(
+        this.taskShareRepo.create({
+          task,
+          user: friend,
+          permission,
+        })
+      );
+    }
 
     return { message: "Task successfully shared." };
   }
