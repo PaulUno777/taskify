@@ -1,15 +1,25 @@
-import { JwtService, DataCrypt } from "@shared/utils";
+import { JwtService, DataCrypt, JwtPayload } from "@shared/utils";
 import { userRepository, userService } from "src/user";
 import { UnauthorizedError } from "@shared/errors";
 
-export class AuthController {
+export class AuthService {
   static async register(
     email: string,
     firstName: string,
     lastName: string,
     password: string
   ) {
-    return await userService.create(email, firstName, lastName, password);
+    const user = await userService.create({
+      email,
+      firstName,
+      lastName,
+      password,
+    });
+    return { message: "Account created successfully!", data: user };
+  }
+
+  static async getProfile(userId: string) {
+    return await userService.findOneById(userId);
   }
 
   static async login(email: string, password: string) {
@@ -32,7 +42,7 @@ export class AuthController {
     user.refreshToken = refreshToken.token;
     await userRepository.save(user);
 
-    return { accessToken, refreshToken };
+    return { access: accessToken, refresh: refreshToken };
   }
 
   static async refreshToken(refreshToken: string) {
@@ -40,19 +50,24 @@ export class AuthController {
       throw new UnauthorizedError("Missing refresh token.");
     }
 
-    const payload = JwtService.verifyToken(refreshToken);
+    const payload = JwtService.decodeToken(refreshToken) as JwtPayload;
     if (!payload) {
       throw new UnauthorizedError("Invalid refresh token.");
     }
 
-    const user = await userService.findOneById(payload.userId);
+    const { userId, email } = payload;
+
+    const user = await userService.findOne(userId);
     if (!user || user.refreshToken !== refreshToken) {
       throw new UnauthorizedError("Invalid refresh token.");
     }
+    const newAccessToken = JwtService.generateAccessToken({ email, userId });
+    const newRefreshToken = JwtService.generateRefreshToken({ email, userId });
 
-    const newAccessToken = JwtService.generateAccessToken(payload);
-    const newRefreshToken = JwtService.generateRefreshToken(payload);
+    //Store current refresh token
+    user.refreshToken = newRefreshToken.token;
+    await userRepository.save(user);
 
-    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+    return { access: newAccessToken, refresh: newRefreshToken };
   }
 }
