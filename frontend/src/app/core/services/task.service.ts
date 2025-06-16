@@ -65,4 +65,10 @@ export class TaskService {
       {}
     );
   }
+
+  unshareTask(taskId: string, userId: string): Observable<void> {
+    return this.http.delete<void>(
+      `${this.apiUrl}/${taskId}/unshare-with/${userId}`
+    );
+  }
 }

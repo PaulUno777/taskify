@@ -82,7 +82,7 @@ export class TaskDetailComponent {
     this.comments = [...this.comments, comment];
   }
 
-  editComment(comment: Comment) {
+  editComment(comment: Message) {
     // Implementation for edit comment
   }
 

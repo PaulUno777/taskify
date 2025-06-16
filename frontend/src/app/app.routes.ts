@@ -7,6 +7,10 @@ import { ProfileComponent } from './modules/auth/profile/profile.component';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { TaskListComponent } from './modules/tasks/task-list/task-list.component';
 import { TaskFormComponent } from './modules/tasks/task-form/task-form.component';
+import { TaskDetailComponent } from './modules/tasks/task-detail/task-detail.component';
+import { TaskShareComponent } from './modules/tasks/task-share/task-share.component';
+import { CategoryListComponent } from './modules/categories/category-list/category-list.component';
+import { CategoryFormComponent } from './modules/categories/category-form/category-form.component';
 
 export const routes: Routes = [
   {
@@ -23,18 +27,47 @@ export const routes: Routes = [
     component: MainLayoutComponent,
     canActivate: [AuthGuard],
     children: [
-      {
-        path: 'profile',
-        component: ProfileComponent,
-      },
+      // Tasks
       {
         path: 'tasks',
-        component: TaskListComponent,
+        component: TaskListComponent
       },
       {
         path: 'tasks/new',
-        component: TaskFormComponent,
+        component: TaskFormComponent
       },
+      {
+        path: 'tasks/:id',
+        component: TaskDetailComponent
+      },
+      {
+        path: 'tasks/:id/edit',
+        component: TaskFormComponent
+      },
+      {
+        path: 'tasks/:id/share',
+        component: TaskShareComponent
+      },
+
+      //Categories
+      {
+        path: 'categories',
+        component: CategoryListComponent
+      },
+      {
+        path: 'categories/new',
+        component: CategoryFormComponent
+      },
+      {
+        path: 'categories/:id/edit',
+        component: CategoryFormComponent
+      },
+
+      // Profile
+      { path: 'profile', component: ProfileComponent },
+
+      // Default redirect
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
   { path: '**', redirectTo: 'auth/login' },
