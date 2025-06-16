@@ -6,10 +6,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const app_1 = __importDefault(require("./app"));
 const config_1 = require("./config/config");
-const data_source_1 = require("./data/data-source");
+const data_source_1 = require("./config/data-source");
 // Init typeorm before start server
 data_source_1.AppDataSource.initialize()
     .then(() => {
+    console.log("Data Source initialized \n");
     app_1.default.listen(config_1.config.port, () => {
         console.log(`Server started on port ${config_1.config.port} in ${config_1.config.nodeEnv} mode.`);
     });

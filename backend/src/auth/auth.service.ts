@@ -9,7 +9,13 @@ export class AuthService {
     lastName: string,
     password: string
   ) {
-    return await userService.create(email, firstName, lastName, password);
+    const user = await userService.create({
+      email,
+      firstName,
+      lastName,
+      password,
+    });
+    return { message: "Account created successfully!", data: user };
   }
 
   static async getProfile(userId: string) {
@@ -51,7 +57,7 @@ export class AuthService {
 
     const { userId, email } = payload;
 
-    const user = await userService.findOneById(userId);
+    const user = await userService.findOne(userId);
     if (!user || user.refreshToken !== refreshToken) {
       throw new UnauthorizedError("Invalid refresh token.");
     }

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import {
   ConflictError,
+  ForbiddenError,
   InternalServerError,
   NotFoundError,
   UnauthorizedError,
@@ -28,6 +29,10 @@ export function errorHandler(
   }
   if (err instanceof NotFoundError) {
     res.status(404).json({ message: err.message });
+    return;
+  }
+  if (err instanceof ForbiddenError) {
+    res.status(403).json({ message: err.message });
     return;
   }
   if (err instanceof InternalServerError) {
