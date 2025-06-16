@@ -55,7 +55,7 @@ export class RegisterComponent {
       })
       .subscribe({
         next: () => {
-          this.router.navigate(['/']);
+          this.router.navigate(['/tasks']);
         },
         error: (err) => {
           this.loading = false;
