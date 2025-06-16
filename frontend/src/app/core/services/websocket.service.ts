@@ -23,7 +23,7 @@ export class WebSocketService {
     if (!this.socket$ || this.socket$.closed) {
       const token = localStorage.getItem('access_token');
       this.socket$ = webSocket({
-        url: `${environment.WS_URL}?token=${token}`,
+        url: `${environment.WS_URL}/ws?token=${token}`,
         openObserver: {
           next: () => console.log('WebSocket connected'),
         },
