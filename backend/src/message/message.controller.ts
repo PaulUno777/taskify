@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { commentService } from ".";
 
-export class CommentController {
+export class MessageController {
   static async create(req: Record<string, any>, res: Response) {
     try {
       const userId = req?.user?.userId;
@@ -14,7 +14,7 @@ export class CommentController {
       });
       res.status(201).json(result);
     } catch (err) {
-      console.log(err)
+      console.log(err);
       res.status(400).json({ message: (err as Error).message });
     }
   }
@@ -48,6 +48,17 @@ export class CommentController {
     try {
       const { id } = req.params;
       const result = await commentService.findOne(id);
+
+      res.json(result);
+    } catch (err) {
+      res.status(400).json({ message: (err as Error).message });
+    }
+  }
+
+  static async findAllForTask(req: Record<string, any>, res: Response) {
+    try {
+      const { taskId } = req.params;
+      const result = await commentService.findAllForTask(taskId);
 
       res.json(result);
     } catch (err) {

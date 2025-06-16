@@ -1,0 +1,49 @@
+.task-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.task-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.task-card mat-card-content {
+  flex: 1;
+}
+.task-meta {
+  margin-top: 16px;
+}
+.task-actions {
+  margin-left: auto;
+}
+.priority-high {
+  background-color: #f44336;
+  color: white;
+}
+.priority-medium {
+  background-color: #ff9800;
+  color: white;
+}
+.priority-low {
+  background-color: #4caf50;
+  color: white;
+}
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: rgba(0, 0, 0, 0.54);
+}
+.empty-state mat-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+}

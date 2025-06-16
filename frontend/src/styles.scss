@@ -1,0 +1,45 @@
+@import "@angular/material/prebuilt-themes/deeppurple-amber.css";
+
+// src/styles/_themes.scss
+
+// Define common variables (these could be different for each theme)
+:root {
+  --text-color: #333;
+  --background-color: #fff;
+  --primary-color: #6200ee;
+  --secondary-color: #03dac6;
+  // Add more variables for other elements like borders, shadows, etc.
+}
+
+// Light Theme (default)
+body.light-theme {
+  --text-color: #333;
+  --background-color: #fff;
+  --primary-color: #6200ee;
+  --secondary-color: #03dac6;
+  // ... other light theme specific variables
+}
+
+// Dark Theme
+body.dark-theme {
+  --text-color: #f0f0f0;
+  --background-color: #121212;
+  --primary-color: #bb86fc;
+  --secondary-color: #03dac6; // You might want a different secondary for dark
+  // ... other dark theme specific variables
+}
+
+.center-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.mb-2 {
+  margin-bottom: 2rem;
+}
+
+.full-width {
+  width: 100%;
+}
