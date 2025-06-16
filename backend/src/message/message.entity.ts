@@ -4,7 +4,7 @@ import { User } from "src/user";
 import { Entity, Column, ManyToOne } from "typeorm";
 
 @Entity()
-export class Comment extends AppBaseEntity {
+export class Message extends AppBaseEntity {
   @Column("text")
   content: string;
 

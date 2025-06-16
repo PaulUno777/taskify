@@ -1,0 +1,99 @@
+<mat-toolbar color="primary" class="toolbar">
+  <div class="brand">
+    <span>Taskify</span>
+  </div>
+
+  <div class="nav-links">
+    <a mat-button routerLink="/tasks" routerLinkActive="active">
+      <mat-icon>task</mat-icon>
+      Tasks
+    </a>
+    <a mat-button routerLink="/categories" routerLinkActive="active">
+      <mat-icon>category</mat-icon>
+      Categories
+    </a>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="actions">
+    <button
+      mat-icon-button
+      (click)="theme.toggleTheme()"
+      matTooltip="Toggle theme"
+    >
+      <mat-icon>{{
+        theme.isDarkMode()() ? "light_mode" : "dark_mode"
+      }}</mat-icon>
+    </button>
+
+    <button
+      mat-icon-button
+      [matMenuTriggerFor]="notificationsMenu"
+      matTooltip="Notifications"
+    >
+      <mat-icon
+        [matBadge]="notificationService.unreadCount()"
+        matBadgeColor="warn"
+        matBadgeSize="small"
+        >notifications</mat-icon
+      >
+    </button>
+
+    <mat-menu #notificationsMenu="matMenu">
+      <div class="notification-header">
+        <h3>Notifications</h3>
+        <button mat-icon-button (click)="notificationService.markAllAsRead()">
+          <mat-icon>done_all</mat-icon>
+        </button>
+      </div>
+      <mat-divider></mat-divider>
+      <div
+        *ngIf="notificationService.notifications().length === 0"
+        class="empty-notifications"
+      >
+        <mat-icon>notifications_off</mat-icon>
+        <p>No notifications</p>
+      </div>
+      <div
+        *ngFor="let notif of notificationService.notifications()"
+        class="notification-item"
+        [class.unread]="!notif.read"
+      >
+        <div class="notification-icon">
+          <mat-icon>{{
+            notif.type === "comment" ? "comment" : "edit"
+          }}</mat-icon>
+        </div>
+        <div class="notification-content">
+          <strong>{{ notif.title }}</strong>
+          <p>{{ notif.message }}</p>
+          <small>{{ notif.timestamp | date : "short" }}</small>
+        </div>
+      </div>
+    </mat-menu>
+
+    <div *ngIf="authService.currentUser$ | async as user" class="user-profile">
+      <button mat-button [matMenuTriggerFor]="profileMenu">
+        <div class="avatar">
+          {{ user.firstName.charAt(0) }}{{ user.lastName.charAt(0) }}
+        </div>
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #profileMenu="matMenu">
+        <button mat-menu-item routerLink="/profile">
+          <mat-icon>person</mat-icon>
+          <span>My Profile</span>
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+</mat-toolbar>
+
+<div class="content-container">
+  <router-outlet></router-outlet>
+</div>

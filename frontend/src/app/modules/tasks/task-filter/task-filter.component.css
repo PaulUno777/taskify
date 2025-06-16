@@ -1,0 +1,25 @@
+.filter-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 4px;
+}
+.filter-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  grid-column: 1 / -1;
+}
+.category-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.color-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}
