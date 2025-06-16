@@ -48,7 +48,7 @@ export class TaskListComponent {
   loadTasks() {
     this.taskService
       .getTasks({
-        page: this.currentPage + 1,
+        page: this.currentPage,
         limit: this.pageSize,
         ...this.filters,
       })

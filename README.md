@@ -1,4 +1,4 @@
-# Full-Stack To-Do Application
+# Taskify
 
 ## Features
 

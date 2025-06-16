@@ -56,9 +56,9 @@
         </mat-chip>
       </span>
     </div>
-    <div class="meta-item" *ngIf="task.sharedWith?.length">
+    <div class="meta-item" *ngIf="task.shares?.length">
       <mat-icon>people</mat-icon>
-      <span>Shared with {{ task.sharedWith.length }} user(s)</span>
+      <span>Shared with {{ task.shares.length }} user(s)</span>
     </div>
   </div>
 
