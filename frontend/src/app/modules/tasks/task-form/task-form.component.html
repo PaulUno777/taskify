@@ -1,0 +1,106 @@
+<form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+  <mat-form-field>
+    <mat-label>Title</mat-label>
+    <input matInput formControlName="title" placeholder="Task title" />
+    <mat-error *ngIf="taskForm.controls.title.invalid">
+      Title is required
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Description</mat-label>
+    <textarea
+      matInput
+      formControlName="description"
+      rows="4"
+      placeholder="Task description"
+    ></textarea>
+  </mat-form-field>
+
+  <div class="form-row">
+    <mat-form-field>
+      <mat-label>Priority</mat-label>
+      <mat-select formControlName="priority">
+        <mat-option *ngFor="let priority of priorities" [value]="priority">
+          {{ priority }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Due Date</mat-label>
+      <input
+        matInput
+        [matDatepicker]="dueDatePicker"
+        formControlName="dueDate"
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="dueDatePicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #dueDatePicker></mat-datepicker>
+    </mat-form-field>
+  </div>
+
+  <div class="category-section">
+    <mat-form-field>
+      <mat-label>Category</mat-label>
+      <mat-select formControlName="categoryId">
+        <mat-option value="">No category</mat-option>
+        <mat-option *ngFor="let category of categories" [value]="category.id">
+          <div class="category-option">
+            <div
+              class="color-indicator"
+              [style.background]="category.color"
+            ></div>
+            {{ category.name }}
+          </div>
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-stroked-button type="button" (click)="showNewCategory = true">
+      <mat-icon>add</mat-icon> New Category
+    </button>
+  </div>
+
+  <div *ngIf="showNewCategory" class="new-category">
+    <mat-form-field>
+      <mat-label>Category Name</mat-label>
+      <input
+        matInput
+        [(ngModel)]="newCategoryName"
+        [ngModelOptions]="{ standalone: true }"
+        placeholder="New category"
+      />
+    </mat-form-field>
+
+    <div class="color-picker">
+      <label for="newCategoryColor">Choose color:</label>
+      <input
+        id="newCategoryColor"
+        type="color"
+        [(ngModel)]="newCategoryColor"
+      />
+    </div>
+
+    <div class="new-category-actions">
+      <button mat-button type="button" (click)="addNewCategory()">Add</button>
+      <button mat-button type="button" (click)="cancelNewCategory()">
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button mat-button type="button" routerLink="/tasks">Cancel</button>
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="taskForm.invalid"
+    >
+      {{ task ? "Update Task" : "Create Task" }}
+    </button>
+  </div>
+</form>

@@ -1,0 +1,30 @@
+<div class="profile-container">
+  <mat-card *ngIf="user$ | async as user" class="profile-card">
+    <mat-card-header>
+      <div mat-card-avatar class="avatar">
+        {{ user.firstName.charAt(0) }}{{ user.lastName.charAt(0) }}
+      </div>
+      <mat-card-title>{{ user.firstName }} {{ user.lastName }}</mat-card-title>
+      <mat-card-subtitle>{{ user.email }}</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-divider></mat-divider>
+    
+    <mat-card-content >
+      <div class="profile-detail">
+        <mat-icon>person</mat-icon>
+        <div>
+          <h3>Account Created</h3>
+          <p>{{ user.createdAt | date:'mediumDate' }}</p>
+        </div>
+      </div>
+    </mat-card-content>
+    
+    <mat-card-actions>
+      <button mat-raised-button color="warn" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Logout
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

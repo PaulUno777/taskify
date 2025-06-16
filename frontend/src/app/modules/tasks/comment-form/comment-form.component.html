@@ -1,0 +1,22 @@
+<form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
+  <mat-form-field class="full-width">
+    <mat-label>Add a comment</mat-label>
+    <textarea
+      matInput
+      formControlName="content"
+      rows="3"
+      placeholder="Write your comment here"
+    >
+    </textarea>
+
+    <button
+      matSuffix
+      mat-icon-button
+      type="submit"
+      color="primary"
+      [disabled]="commentForm.invalid"
+    >
+      <mat-icon>{{ loading ? "hourglass_top" : "send" }}</mat-icon>
+    </button>
+  </mat-form-field>
+</form>

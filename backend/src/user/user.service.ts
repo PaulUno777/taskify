@@ -18,7 +18,7 @@ export class UserService {
     firstName,
     lastName,
     password,
-  }: CreateUserDto): Promise<StandardOutputDto> {
+  }: CreateUserDto): Promise<User> {
     // Check if email exists
     const existingUser = await this.repository.findOneBy({ email });
     if (existingUser) {
@@ -37,10 +37,7 @@ export class UserService {
       })
     );
 
-    return {
-      message: "User successfully created.",
-      data: UserMapper.toDto(user),
-    };
+    return user;
   }
 
   async findOneById(id: string): Promise<UserDto> {

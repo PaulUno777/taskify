@@ -2,7 +2,7 @@ import { AppBaseEntity } from "@shared/entities/app-base.entity";
 import { Category } from "src/category";
 import { Task } from "src/task";
 import { Entity, Column, OneToMany } from "typeorm";
-import { Comment } from "src/comment";
+import { Message } from "src/message";
 import { TaskShare } from "src/task";
 
 @Entity()
@@ -31,6 +31,6 @@ export class User extends AppBaseEntity {
   @OneToMany(() => Category, (category) => category.user)
   categories: Category[];
 
-  @OneToMany(() => Comment, (comment) => comment.author)
-  comments: Comment[];
+  @OneToMany(() => Message, (comment) => comment.author)
+  comments: Message[];
 }

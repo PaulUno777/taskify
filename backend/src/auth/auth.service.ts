@@ -15,7 +15,15 @@ export class AuthService {
       lastName,
       password,
     });
-    return { message: "Account created successfully!", data: user };
+    
+    const payload = { userId: user.id, email: user.email };
+    const accessToken = JwtService.generateAccessToken(payload);
+    const refreshToken = JwtService.generateRefreshToken(payload);
+
+    user.refreshToken = refreshToken.token;
+    await userRepository.save(user);
+
+    return { access: accessToken, refresh: refreshToken };
   }
 
   static async getProfile(userId: string) {
@@ -64,7 +72,7 @@ export class AuthService {
     const newAccessToken = JwtService.generateAccessToken({ email, userId });
     const newRefreshToken = JwtService.generateRefreshToken({ email, userId });
 
-    //Store current refresh token
+
     user.refreshToken = newRefreshToken.token;
     await userRepository.save(user);
 

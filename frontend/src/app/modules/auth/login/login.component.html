@@ -1,0 +1,65 @@
+<mat-card>
+  <mat-card-header class="center-content mb-2">
+    <mat-card-title>Welcome back</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          formControlName="email"
+          type="email"
+          autocomplete="username"
+        />
+        <mat-error *ngIf="email?.hasError('required')">
+          Email is required.
+        </mat-error>
+        <mat-error *ngIf="email?.hasError('email')">
+          Please enter a valid email.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          formControlName="password"
+          type="password"
+          autocomplete="current-password"
+        />
+        <mat-error *ngIf="password?.hasError('required')">
+          Password is required.
+        </mat-error>
+      </mat-form-field>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="loginForm.invalid"
+        class="login-button"
+      >
+        <ng-container *ngIf="loading; else normalText">
+          <mat-spinner [diameter]="24"></mat-spinner>
+          <span>Logging in...</span>
+        </ng-container>
+
+        <ng-template #normalText>
+          <span>Login</span>
+        </ng-template>
+      </button>
+    </form>
+  </mat-card-content>
+
+  <mat-card-actions class="center-content">
+    <a mat-button routerLink="/auth/register">
+      Don't have an account? Register
+    </a>
+  </mat-card-actions>
+
+  <mat-error *ngIf="error" class="center-content error-message">
+    {{ error }}
+  </mat-error>
+</mat-card>

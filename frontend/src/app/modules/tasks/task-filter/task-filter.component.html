@@ -1,0 +1,75 @@
+<div class="filter-container" [formGroup]="filterForm">
+  <mat-form-field>
+    <mat-label>Search</mat-label>
+    <input matInput formControlName="search" placeholder="Search tasks..." />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Category</mat-label>
+    <mat-select formControlName="categoryId">
+      <mat-option value="">All Categories</mat-option>
+      <mat-option *ngFor="let cat of categories" [value]="cat.id">
+        <div class="category-option">
+          <div class="color-indicator" [style.background]="cat.color"></div>
+          {{ cat.name }}
+        </div>
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Priority</mat-label>
+    <mat-select formControlName="priority">
+      <mat-option value="">All Priorities</mat-option>
+      <mat-option value="HIGH">High</mat-option>
+      <mat-option value="MEDIUM">Medium</mat-option>
+      <mat-option value="LOW">Low</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Status</mat-label>
+    <mat-select formControlName="isCompleted">
+      <mat-option value="">All Statuses</mat-option>
+      <mat-option [value]="true">Completed</mat-option>
+      <mat-option [value]="false">Pending</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Due Date From</mat-label>
+    <input
+      matInput
+      [matDatepicker]="dueDateFromPicker"
+      formControlName="dueDateFrom"
+    />
+    <mat-datepicker-toggle
+      matSuffix
+      [for]="dueDateFromPicker"
+    ></mat-datepicker-toggle>
+    <mat-datepicker #dueDateFromPicker></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Due Date To</mat-label>
+    <input
+      matInput
+      [matDatepicker]="dueDateToPicker"
+      formControlName="dueDateTo"
+    />
+    <mat-datepicker-toggle
+      matSuffix
+      [for]="dueDateToPicker"
+    ></mat-datepicker-toggle>
+    <mat-datepicker #dueDateToPicker></mat-datepicker>
+  </mat-form-field>
+
+  <div class="filter-actions">
+    <button mat-button color="primary" (click)="applyFilters()">
+      <mat-icon>search</mat-icon> Apply
+    </button>
+    <button mat-button color="warn" (click)="resetFilters()">
+      <mat-icon>clear</mat-icon> Reset
+    </button>
+  </div>
+</div>
