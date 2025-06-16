@@ -1,9 +1,9 @@
 import { AppDataSource } from "@config/data-source";
-import { Comment } from "./task-comment.entity";
-import { CommentService } from "./task-comment.service";
+import { Comment } from "./comment.entity";
+import { CommentService } from "./comment.service";
 
-export * from "./task-comment.entity";
-export * from "./task-comment-input.dto";
+export * from "./comment.entity";
+export * from "./comment-input.dto";
 
 export const commentRepository = AppDataSource.getRepository(Comment);
 export const commentService = new CommentService();

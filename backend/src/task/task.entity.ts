@@ -1,15 +1,14 @@
 import { AppBaseEntity } from "@shared/entities/app-base.entity";
 import { Category } from "src/category";
-import { User, UserDto } from "src/user";
+import { User } from "src/user";
 import {
   Entity,
   Column,
   ManyToOne,
   OneToMany,
-  ManyToMany,
-  JoinTable,
 } from "typeorm";
 import { Comment } from "src/comment";
+import { TaskShare } from "./task-share.entity";
 
 export enum Priority {
   LOW = "LOW",
@@ -44,9 +43,8 @@ export class Task extends AppBaseEntity {
   })
   category: Category;
 
-  @ManyToMany(() => User, (user) => user.sharedTasks)
-  @JoinTable()
-  sharedWith: User[];
+  @OneToMany(() => TaskShare, (ts) => ts.task)
+  shares: TaskShare[];
 
   @OneToMany(() => Comment, (comment) => comment.task)
   comments: Comment[];

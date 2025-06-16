@@ -1,23 +1,21 @@
-import { taskRepository } from "src/task";
+import { taskService } from "src/task";
 import { CreateCommentDto, Comment, commentRepository } from ".";
 import { NotFoundError, ForbiddenError } from "@shared/errors";
-import { userRepository } from "src/user";
+import { userService } from "src/user";
 import { StandardOutputDto } from "@shared/dtos/standard-output.dto";
 
 export class CommentService {
   private commentRepo = commentRepository;
-  private taskRepo = taskRepository;
-  private userRepo = userRepository;
 
   async create({
     content,
     taskId,
     authorId,
   }: CreateCommentDto): Promise<StandardOutputDto> {
-    const task = await this.taskRepo.findOne({ where: { id: taskId } });
+    const task = await taskService.findOne(taskId, authorId);
     if (!task) throw new NotFoundError("Task not found.");
 
-    const author = await this.userRepo.findOne({ where: { id: authorId } });
+    const author = await userService.findOne(authorId);
     if (!author) throw new NotFoundError("Author not found.");
 
     await this.commentRepo.save(
@@ -28,7 +26,14 @@ export class CommentService {
   }
 
   async findOne(id: string): Promise<Comment> {
-    const comment = await this.commentRepo.findOne({ where: { id } });
+    const comment = await this.commentRepo.createQueryBuilder("comment")
+    .innerJoin("comment.author", "author")
+    .addSelect([
+      "author.id",
+      "author.email",
+      "author.firstName",
+      "author.lastName",
+    ]).getOne();
 
     if (!comment) throw new NotFoundError("Comment not found.");
     return comment;
@@ -46,8 +51,8 @@ export class CommentService {
       throw new ForbiddenError("Not authorized.");
 
     comment.content = content;
-    const updated = await this.commentRepo.save(comment);
-    return { message: "Comment successfully updated.", data: updated };
+    await this.commentRepo.save(comment);
+    return { message: "Comment successfully updated." };
   }
 
   async delete(id: string, authorId: string): Promise<StandardOutputDto> {
