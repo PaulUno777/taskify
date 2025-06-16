@@ -9,6 +9,7 @@ export interface JwtPayload {
 
 interface TokenOutput {
   token: string;
+  type: string;
   expiresIn: number;
 }
 
@@ -19,6 +20,7 @@ export class JwtService {
     });
     return {
       token,
+      type: 'Bearer',
       expiresIn: config.accessTokenExpiresIn,
     };
   }
@@ -29,15 +31,25 @@ export class JwtService {
     });
     return {
       token,
-      expiresIn: config.accessTokenExpiresIn,
+      type: 'Bearer',
+      expiresIn: config.refreshTokenExpiresIn,
     };
   }
 
-  static verifyToken(token: string): JwtPayload | null {
+  static verifyToken(token: string, isRefresh = false) {
     try {
-      return jwt.verify(token, config.jwtSecret) as JwtPayload;
-    } catch {
-      return null;
+      const secret = isRefresh ?config.jwtSecretRefresh :config.jwtSecret
+      return jwt.verify(token, secret);
+    } catch(error) {
+       throw error;
+    }
+  }
+
+  static decodeToken(token: string, isRefresh = false) {
+    try {
+      return jwt.decode(token);
+    } catch(error) {
+       throw error;
     }
   }
 }
